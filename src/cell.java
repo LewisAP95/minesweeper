@@ -12,4 +12,44 @@ public class cell {
         this.isVisible = isVisible;
         beenGuessed = false;
     }
+
+    public int getNearbyMines(){
+        return nearbyMines;
+    }
+
+    public boolean getMineStatus(){
+        return isMine;
+    }
+
+    public boolean getFlaggedStatus(){
+        return isFlagged;
+    }
+
+    public boolean getVisibleStatus(){
+        return isVisible;
+    }
+
+    public boolean getGuessedStatus(){
+        return beenGuessed;
+    }
+
+    public int setNearbyMines(){
+        return nearbyMines;
+    }
+
+    public boolean setMineStatus(){
+        return isMine;
+    }
+
+    public boolean setFlaggedStatus(){
+        return isFlagged;
+    }
+
+    public boolean setVisibleStatus(){
+        return isVisible;
+    }
+
+    public boolean setGuessedStatus(){
+        return beenGuessed;
+    }
 }
