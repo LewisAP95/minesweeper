@@ -5,11 +5,11 @@ public class cell {
     private boolean isVisible;
     private boolean beenGuessed;
 
-    public cell(int nearbyMines, boolean isMine, boolean isFlagged, boolean isVisible){
-        this.nearbyMines = nearbyMines;
-        this.isMine = isMine;
-        this.isFlagged = isFlagged;
-        this.isVisible = isVisible;
+    public cell(){
+        nearbyMines = 0;
+        isMine = false;
+        isFlagged = false;
+        isVisible = false;
         beenGuessed = false;
     }
 
@@ -33,23 +33,23 @@ public class cell {
         return beenGuessed;
     }
 
-    public int setNearbyMines(){
-        return nearbyMines;
+    public void setNearbyMines(int count){
+        nearbyMines = count;
     }
 
-    public boolean setMineStatus(){
-        return isMine;
+    public void setMineStatus(boolean status){
+        isMine = status;
     }
 
-    public boolean setFlaggedStatus(){
-        return isFlagged;
+    public void setFlaggedStatus(boolean status){
+        isFlagged = status;
     }
 
-    public boolean setVisibleStatus(){
-        return isVisible;
+    public void setVisibleStatus(boolean status){
+        isVisible = status;
     }
 
-    public boolean setGuessedStatus(){
-        return beenGuessed;
+    public void setGuessedStatus(boolean status){
+        beenGuessed = status;
     }
 }
