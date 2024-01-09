@@ -14,6 +14,15 @@ public class gameBoard {
         cellGrid = generateNewGrid();
     }
 
+    public void testPrint(){
+        for(int x = 0; x < xSize; x++){
+            for(int y = 0; y < ySize; y++){
+                System.out.print(cellGrid[x][y].getNearbyMines());
+            }
+            System.out.println();
+        }
+    }
+
     private cell[][] generateNewGrid(){
         cell[][] newGrid = new cell[xSize][ySize];
 
@@ -23,7 +32,7 @@ public class gameBoard {
             }
         }
 
-        return layMines(newGrid);
+        return scanForNearbyMineCount(layMines(newGrid));
     }
 
     private cell[][] layMines(cell[][] newGrid){
@@ -44,10 +53,57 @@ public class gameBoard {
                 int right = x + 1;
                 int up = y + 1;
                 int down = y - 1;
-                //upper left: x-1 & y+1
-                //upper right: x+1 & y+1
-                //lower left: x-1 & y-1
-                //lower right: x+1 & y-1
+
+                //Left, upper left and lower left
+                if(left >= 0){
+                    if(newGrid[left][y].getMineStatus() == true){
+                        minesFound++;
+                    }
+                    if(up < ySize - 1){
+                        if(newGrid[left][up].getMineStatus() == true){
+                            minesFound++;
+                        }
+                    }
+                    if(down >= 0){
+                        if(newGrid[left][down].getMineStatus() == true){
+                            minesFound++;
+                        }
+                    }
+                }
+
+                //Right, upper right and lower right
+                if(right < xSize - 1){
+                    if(newGrid[right][y].getMineStatus() == true){
+                        minesFound++;
+                    }
+                    if(up < ySize - 1){
+                        if(newGrid[right][up].getMineStatus() == true){
+                            minesFound++;
+                        }
+                    }
+                    if(down >= 0){
+                        if(newGrid[right][down].getMineStatus() == true){
+                            minesFound++;
+                        }
+                    }
+                }
+
+                //Up
+                if(up < ySize - 1){
+                    if(newGrid[x][up].getMineStatus() == true){
+                        minesFound++;
+                    }
+                }
+
+                //Down
+                if(down >= 0){
+                    if(newGrid[x][down].getMineStatus() == true){
+                        minesFound++;
+                    }
+                }
+
+                //Set the amount of discovered mines
+                newGrid[x][y].setNearbyMines(minesFound);
             }
         }
 
