@@ -95,14 +95,8 @@ public class gameBoard {
 
         //Not all cells will have 8 surrounding cells due to edges and corners
         //This step makes a new array containing only the actual cells found above
-        int finalCount = 0;
-        for(cell c : foundCells){
-            if(c != null){
-                finalCount++;
-            }
-        }
-        cell[] finalSet = new cell[finalCount];
-        for(int i = 0; i < finalCount; i++){
+        cell[] finalSet = new cell[foundIndex];
+        for(int i = 0; i < foundIndex; i++){
             finalSet[i] = foundCells[i];
         }
 
