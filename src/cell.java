@@ -14,6 +14,10 @@ public class cell {
     }
 
     public int getRenderValue(){
+        //Returns a number based on the state the cell is in
+        // -1 for cells not yet revealed
+        // -2 for flagged cells
+        // And for all else it returns the number of nearby mines
         if(isVisible){
             if(isFlagged){
                 return -2;
