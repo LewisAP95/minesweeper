@@ -1,6 +1,7 @@
 public class App {
     public static void main(String[] args) throws Exception{
         gameBoard testBoard = new gameBoard(10, 10, 10);
-        testBoard.testPrint();
+        testBoard.testPrint(0);
+        testBoard.testPrint(1);
     }
 }

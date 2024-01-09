@@ -13,6 +13,20 @@ public class cell {
         beenGuessed = false;
     }
 
+    public int getRenderValue(){
+        if(isVisible == true){
+            if(isFlagged == true){
+                return -2;
+            }
+            if(isMine == true){
+                return -3;
+            }
+            return nearbyMines;
+        }else{
+            return -1;
+        }
+    }
+
     public int getNearbyMines(){
         return nearbyMines;
     }

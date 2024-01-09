@@ -11,13 +11,17 @@ public class gameBoard {
         this.ySize = ySize;
         this.mineCount = mineCount;
 
-        cellGrid = generateNewGrid();
+        cellGrid = scanForNearbyMineCount(layMines(generateNewGrid()));
     }
 
-    public void testPrint(){
+    public void testPrint(int a){
         for(int x = 0; x < xSize; x++){
             for(int y = 0; y < ySize; y++){
-                System.out.print(cellGrid[x][y].getNearbyMines());
+                if(a == 0){
+                    System.out.print(cellGrid[x][y].getNearbyMines());
+                }else if(a == 1){
+                    System.out.print(getRenderGrid()[x][y]);
+                }
             }
             System.out.println();
         }
@@ -32,7 +36,7 @@ public class gameBoard {
             }
         }
 
-        return NEWscanForNearbyMineCount(layMines(newGrid));
+        return newGrid;
     }
 
     private cell[][] layMines(cell[][] newGrid){
@@ -45,7 +49,7 @@ public class gameBoard {
         return newGrid;
     }
 
-    private cell[][] NEWscanForNearbyMineCount(cell[][] newGrid){
+    private cell[][] scanForNearbyMineCount(cell[][] newGrid){
         int[] scanDirs = {-1, 0, 1};
         for(int x = 0; x < xSize; x++){
             for(int y = 0; y < ySize; y++){
@@ -72,5 +76,15 @@ public class gameBoard {
         }
 
         return newGrid;
+    }
+
+    public int[][] getRenderGrid(){
+        int[][] renderGrid = new int[xSize][ySize];
+        for(int x = 0; x < xSize; x++){
+            for(int y = 0; y < ySize; y++){
+                renderGrid[x][y] = cellGrid[x][y].getRenderValue();
+            }
+        }
+        return renderGrid;
     }
 }
