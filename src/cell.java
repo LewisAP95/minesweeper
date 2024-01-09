@@ -14,14 +14,12 @@ public class cell {
     }
 
     public int getRenderValue(){
-        if(isVisible == true){
-            if(isFlagged == true){
+        if(isVisible){
+            if(isFlagged){
                 return -2;
+            }else{
+                return nearbyMines;
             }
-            if(isMine == true){
-                return -3;
-            }
-            return nearbyMines;
         }else{
             return -1;
         }

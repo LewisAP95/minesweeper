@@ -78,7 +78,7 @@ public class gameBoard {
         return newGrid;
     }
 
-    public int[][] getRenderGrid(){
+    private int[][] getRenderGrid(){
         int[][] renderGrid = new int[xSize][ySize];
         for(int x = 0; x < xSize; x++){
             for(int y = 0; y < ySize; y++){
@@ -86,5 +86,18 @@ public class gameBoard {
             }
         }
         return renderGrid;
+    }
+
+    //public int[][] makeGuess(int guessX, int guessY){
+    //    
+    //}
+
+    public int[][] doFlag(int flagX, int flagY){
+        if(cellGrid[flagX][flagY].getFlaggedStatus()){
+            cellGrid[flagX][flagY].setFlaggedStatus(false);
+        }else{
+            cellGrid[flagX][flagY].setFlaggedStatus(true);
+        }
+        return getRenderGrid();
     }
 }
