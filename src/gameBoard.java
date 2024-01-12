@@ -34,7 +34,7 @@ public class gameBoard {
 
         for(int x = 0; x < xSize; x++){
             for(int y = 0; y < ySize; y++){
-                newGrid[x][y] = new cell();
+                newGrid[x][y] = new cell(x, y);
             }
         }
 
@@ -59,7 +59,7 @@ public class gameBoard {
                 int minesFound = 0;
 
                 //Set the amount of discovered mines
-                for(cell c : getSurroundingCells(x, y, newGrid)){
+                for(cell c : getSurroundingCells(newGrid[x][y], newGrid)){
                     if(c.getMineStatus()){
                         minesFound++;
                     }
@@ -71,7 +71,7 @@ public class gameBoard {
         return newGrid;
     }
 
-    private cell[] getSurroundingCells(int cellX, int cellY, cell[][] grid){
+    private cell[] getSurroundingCells(cell originCell, cell[][] grid){
         //Returns an array of all surrounding cells for a given cell
         int[] scanDirs = {-1, 0, 1};
         cell[] foundCells =  new cell[8];
@@ -80,12 +80,12 @@ public class gameBoard {
         //Work through all modifiers of the X, Y indices
         for(int scanX = 0; scanX < scanDirs.length; scanX++){
             for(int scanY = 0; scanY < scanDirs.length; scanY++){
-                int modifiedIndexX = cellX + scanDirs[scanX];
-                int modifiedIndexY = cellY + scanDirs[scanY];
+                int modifiedIndexX = originCell.getX() + scanDirs[scanX];
+                int modifiedIndexY = originCell.getY() + scanDirs[scanY];
                 //Only proceeds if the cell is in bounds
                 if((modifiedIndexX >= 0 && modifiedIndexX < xSize - 1) && (modifiedIndexY >= 0 && modifiedIndexY < ySize - 1)){
-                    if(modifiedIndexX != cellX || modifiedIndexY !=  cellY){
-                        //Doesn't proceed if the index is the original cell itself
+                    if(modifiedIndexX != originCell.getX() || modifiedIndexY !=  originCell.getY()){
+                        //Doesn't proceed if both indices match the original cell itself
                         foundCells[foundIndex] = grid[modifiedIndexX][modifiedIndexY];
                         foundIndex++;
                     }
@@ -120,6 +120,7 @@ public class gameBoard {
     //}
 
     public int[][] doFlag(int flagX, int flagY){
+        //Needs input validation
         if(cellGrid[flagX][flagY].getFlaggedStatus()){
             cellGrid[flagX][flagY].setFlaggedStatus(false);
         }else{

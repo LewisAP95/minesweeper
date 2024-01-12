@@ -4,13 +4,17 @@ public class cell {
     private boolean isFlagged;
     private boolean isVisible;
     private boolean beenGuessed;
+    private int xCoord;
+    private int yCoord;
 
-    public cell(){
+    public cell(int x, int y){
         nearbyMines = 0;
         isMine = false;
         isFlagged = false;
         isVisible = false;
         beenGuessed = false;
+        xCoord = x;
+        yCoord = y;
     }
 
     public int getRenderValue(){
@@ -47,6 +51,14 @@ public class cell {
 
     public boolean getGuessedStatus(){
         return beenGuessed;
+    }
+
+    public int getX(){
+        return xCoord;
+    }
+
+    public int getY(){
+        return yCoord;
     }
 
     public void setNearbyMines(int count){
