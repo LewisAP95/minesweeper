@@ -83,7 +83,7 @@ public class gameBoard {
                 int modifiedIndexX = originCell.getX() + scanDirs[scanX];
                 int modifiedIndexY = originCell.getY() + scanDirs[scanY];
                 //Only proceeds if the cell is in bounds
-                if((modifiedIndexX >= 0 && modifiedIndexX < xSize - 1) && (modifiedIndexY >= 0 && modifiedIndexY < ySize - 1)){
+                if(boundsCheck(modifiedIndexX, modifiedIndexY)){
                     if(modifiedIndexX != originCell.getX() || modifiedIndexY !=  originCell.getY()){
                         //Doesn't proceed if both indices match the original cell itself
                         foundCells[foundIndex] = grid[modifiedIndexX][modifiedIndexY];
@@ -115,17 +115,54 @@ public class gameBoard {
         return renderGrid;
     }
 
-    //public int[][] makeGuess(int guessX, int guessY){
-    //    
-    //}
+    public int[][] makeGuess(int guessX, int guessY){
+        if(!boundsCheck(guessX, guessY)){
+            //Return a zeroed grid on an out of bounds guess
+            return new int[xSize][ySize];
+        }else if(cellGrid[guessX][guessY].getMineStatus()){
+            //Return a grid with a cell value that will trigger a game over
+            int[][] gameOverGrid = new int[xSize][ySize];
+            gameOverGrid[0][0] = -99;
+            return gameOverGrid;
+        }else if(cellGrid[guessX][guessY].getGuessedStatus()){
+            //If the cell has already been guessed, change nothing
+            return getRenderGrid();
+        }else{
+            //Changes the right values on a guessed cell
+            cell guessedCell = cellGrid[guessX][guessY];
+            guessedCell.setGuessedStatus(true);
+            guessedCell.setVisibleStatus(true);
+            guessedCell.setFlaggedStatus(false);
+            //If cell was a 0 for nearby mines, guesses all surrounding cells to reveal them
+            //Proceeding recursively if any of those end up also being zero 
+            if(guessedCell.getNearbyMines() == 0){
+                for(cell c : getSurroundingCells(guessedCell, cellGrid)){
+                    makeGuess(guessedCell.getX(), guessedCell.getY());
+                }
+            }
+            return getRenderGrid();
+        }
+    }
 
     public int[][] doFlag(int flagX, int flagY){
-        //Needs input validation
-        if(cellGrid[flagX][flagY].getFlaggedStatus()){
-            cellGrid[flagX][flagY].setFlaggedStatus(false);
+        //Flips the flag status on the cell at the given coords
+        //If the coords were invalid returns a same-size grid filled with 0s
+        if(boundsCheck(flagX, flagY)){
+            if(cellGrid[flagX][flagY].getFlaggedStatus()){
+                cellGrid[flagX][flagY].setFlaggedStatus(false);
+            }else{
+                cellGrid[flagX][flagY].setFlaggedStatus(true);
+            }
+            return getRenderGrid();
         }else{
-            cellGrid[flagX][flagY].setFlaggedStatus(true);
+            return new int[xSize][ySize];
         }
-        return getRenderGrid();
+    }
+
+    private boolean boundsCheck(int x, int y){
+        //Checks of a set of coords are within the bounds of the game grid and returns the result
+        if((x >= 0 && x < xSize) && (y >= 0 && y < ySize)){
+            return true;
+        }else return false;
     }
 }
