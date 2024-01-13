@@ -137,7 +137,7 @@ public class gameBoard {
             //Proceeding recursively if any of those end up also being zero 
             if(guessedCell.getNearbyMines() == 0){
                 for(cell c : getSurroundingCells(guessedCell, cellGrid)){
-                    makeGuess(guessedCell.getX(), guessedCell.getY());
+                    makeGuess(c.getX(), c.getY());
                 }
             }
             return getRenderGrid();
