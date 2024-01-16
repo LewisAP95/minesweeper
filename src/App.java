@@ -4,6 +4,6 @@ public class App {
         testBoard.testPrint(0);
         testBoard.testPrint(1);
 
-        guiController testGui = new guiController(600, 600);
+        guiManager testGui = new guiManager(600, 600);
     }
 }

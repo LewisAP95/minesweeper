@@ -2,12 +2,12 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class guiController {
+public class guiManager {
     private int windowWidth;
     private int windowHeight;
     private JFrame gameWindow;
 
-    public guiController(int desiredWindowHeight, int desiredWindowWidth){
+    public guiManager(int desiredWindowHeight, int desiredWindowWidth){
         windowWidth = desiredWindowWidth;
         windowHeight = desiredWindowHeight;
         javax.swing.SwingUtilities.invokeLater(new Runnable(){

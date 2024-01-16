@@ -5,6 +5,7 @@ public class gameBoard {
     private int ySize;
     private int mineCount;
     private cell[][] cellGrid;
+    private gameController controller;
 
     public gameBoard(int xSize, int ySize, int mineCount){
         this.xSize = xSize;
@@ -24,6 +25,36 @@ public class gameBoard {
                 }
             }
             System.out.println();
+        }
+    }
+
+    public void register(gameController controller){
+        this.controller = controller;
+    }
+
+    public void deregister(){
+        controller = null;
+    }
+
+    private void updateController(int errorCode){
+        switch (errorCode) {
+            //Normal, no issues update case
+            case 0:
+                controller.update(getRenderGrid());
+                break;
+            
+            //Out of grid bounds error case
+            case 1:
+                controller.update(1);
+                break;
+
+            //Game over case
+            case 2:
+                controller.update(2);
+                break;
+                
+            default:
+                break;
         }
     }
 
@@ -115,18 +146,16 @@ public class gameBoard {
         return renderGrid;
     }
 
-    public int[][] makeGuess(int guessX, int guessY){
+    public void makeGuess(int guessX, int guessY){
         if(!boundsCheck(guessX, guessY)){
-            //Return a zeroed grid on an out of bounds guess
-            return new int[xSize][ySize];
+            //Call an out of bounds error on out of bounds guess
+            updateController(1);
         }else if(cellGrid[guessX][guessY].getMineStatus()){
-            //Return a grid with a cell value that will trigger a game over
-            int[][] gameOverGrid = new int[xSize][ySize];
-            gameOverGrid[0][0] = -99;
-            return gameOverGrid;
+            //Call update with a game over code if cell is a mine
+            updateController(2);
         }else if(cellGrid[guessX][guessY].getGuessedStatus()){
             //If the cell has already been guessed, change nothing
-            return getRenderGrid();
+            ;
         }else{
             //Changes the right values on a guessed cell
             cell guessedCell = cellGrid[guessX][guessY];
@@ -140,22 +169,23 @@ public class gameBoard {
                     makeGuess(c.getX(), c.getY());
                 }
             }
-            return getRenderGrid();
+            //May run too many updates on a zero cell cascade, needs testing
+            updateController(0);
         }
     }
 
-    public int[][] doFlag(int flagX, int flagY){
+    public void doFlag(int flagX, int flagY){
         //Flips the flag status on the cell at the given coords
-        //If the coords were invalid returns a same-size grid filled with 0s
+        //If the coords were invalid calls and update with the out of bounds error code
         if(boundsCheck(flagX, flagY)){
             if(cellGrid[flagX][flagY].getFlaggedStatus()){
                 cellGrid[flagX][flagY].setFlaggedStatus(false);
             }else{
                 cellGrid[flagX][flagY].setFlaggedStatus(true);
             }
-            return getRenderGrid();
+            updateController(0);
         }else{
-            return new int[xSize][ySize];
+            updateController(1);
         }
     }
 
