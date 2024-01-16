@@ -17,12 +17,36 @@ public class guiManager {
         });
     }
 
-    public void visualUpdate(){
-        //gameWindow.getContentPane();
+    public void visualUpdate(int[][] renderGrid){
+        //renderGrid status list:
+        // -1 for cells not yet revealed
+        // -2 for flagged cells
+        // All else is just the number of surrounding mines
+        for(int x = 0; x < renderGrid.length; x++){
+            for(int y = 0; y < renderGrid[0].length; y++){
+                String buttonContent = "";
+                switch (renderGrid[x][y]) {
+                    case -1:
+                        buttonContent = "-";
+                        break;
+                    
+                    case -2:
+                        buttonContent = "F";
+                        break;
+
+                    default:
+                        buttonContent = "" + renderGrid[x][y];
+                        break;
+                }
+                JButton cellButton = new JButton(buttonContent);
+                cellButton.setActionCommand("cellref " + x + " " + y);
+                gameWindow.getContentPane().add(cellButton);
+            }
+        }
     }
 
     private void setupMainWindow(){
-        //Settin up window frame
+        //Setting up window frame
         JFrame baseFrame = new JFrame("Minesweeper");
         baseFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -55,9 +79,17 @@ public class guiManager {
         JLabel timeLabel = new JLabel("Time: ");
         timeLabel.setOpaque(true);
 
+        JLabel difficultyLabel = new JLabel("Difficulty: ");
+        difficultyLabel.setOpaque(true);
+
+        JLabel minesLabel = new JLabel("Mines: ");
+        minesLabel.setOpaque(true);
+
         optionsAndInfoBar.add(newgameButton);
         optionsAndInfoBar.add(customgameButton);
         optionsAndInfoBar.add(timeLabel);
+        optionsAndInfoBar.add(difficultyLabel);
+        optionsAndInfoBar.add(minesLabel);
 
         //Adding a label to act as the background colour
         //JLabel blankBackground = new JLabel();
@@ -68,7 +100,7 @@ public class guiManager {
 
         //baseFrame.getContentPane().add(blankBackground);
 
-        //Making the window display
+        //Making the window display itself
         gameWindow = baseFrame;
         baseFrame.pack();
         baseFrame.setVisible(true);
