@@ -7,32 +7,11 @@ public class gameBoard {
     private cell[][] cellGrid;
     private gameController controller;
 
-    public gameBoard(int xSize, int ySize, int mineCount){
-        this.xSize = xSize;
-        this.ySize = ySize;
-        this.mineCount = mineCount;
-
-        cellGrid = scanForNearbyMineCount(layMines(generateNewGrid()));
-    }
-
-    public void testPrint(int a){
-        for(int x = 0; x < xSize; x++){
-            for(int y = 0; y < ySize; y++){
-                if(a == 0){
-                    System.out.print(cellGrid[x][y].getNearbyMines());
-                }else if(a == 1){
-                    System.out.print(getRenderGrid()[x][y]);
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    public void register(gameController controller){
+    public void registerController(gameController controller){
         this.controller = controller;
     }
 
-    public void deregister(){
+    public void deregisterController(){
         controller = null;
     }
 
@@ -52,13 +31,22 @@ public class gameBoard {
             case 2:
                 controller.update(2);
                 break;
-                
+
             default:
                 break;
         }
     }
 
-    private cell[][] generateNewGrid(){
+    public void createNewGameGrid(int xSize, int ySize, int mineCount, int firstGuessX, int firstGuessY){
+        this.xSize = xSize;
+        this.ySize = ySize;
+        this.mineCount = mineCount;
+
+        cellGrid = scanForNearbyMineCount(layMines(generateBlankGrid(), firstGuessX, firstGuessY));
+        makeGuess(firstGuessX, firstGuessY);
+    }
+
+    private cell[][] generateBlankGrid(){
         //Makes a new grid (2d array) of the size given when the game board was instantiated
         //Fills this grid with cells of the default setup
         cell[][] newGrid = new cell[xSize][ySize];
@@ -72,12 +60,31 @@ public class gameBoard {
         return newGrid;
     }
 
-    private cell[][] layMines(cell[][] newGrid){
+    private cell[][] layMines(cell[][] newGrid, int firstGuessX, int firstGuessY){
         //Takes in a grid and, for the desired number of mines, randomly generates X and Y to 'place' these mines at
-        for(int minesPlaced = 0; minesPlaced < mineCount; minesPlaced++){
+        //Doesn't generate a mine on the cell of the first guess or any directly surrounding cells
+        cell[] firstGuessSurroundingCells = getSurroundingCells(newGrid[firstGuessX][firstGuessY], newGrid);
+        int minesPlaced = 0;
+        while(minesPlaced < mineCount){
+            //Generate the random coordinates
             int randX = ThreadLocalRandom.current().nextInt(0, xSize);
             int randY = ThreadLocalRandom.current().nextInt(0, ySize);
-            newGrid[randX][randY].setMineStatus(true);
+
+            //Sets a flag to skip generating a mine on the current cell if it was the first guessed or any surrounding ones
+            boolean skipCell = false;
+            if(randX == firstGuessX && randY == firstGuessY){
+                skipCell = true;
+            }
+            for(cell c : firstGuessSurroundingCells){
+                if(c == newGrid[randX][randY]){
+                    skipCell = true;
+                }
+            }
+
+            if(!skipCell){
+                newGrid[randX][randY].setMineStatus(true);
+                minesPlaced++;
+            }
         }
 
         return newGrid;

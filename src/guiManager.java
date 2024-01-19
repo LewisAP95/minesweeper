@@ -18,6 +18,7 @@ public class guiManager {
     }
 
     public void visualUpdate(int[][] renderGrid){
+        gameWindow.getContentPane().setLayout(new GridLayout(renderGrid.length, renderGrid[0].length));
         //renderGrid status list:
         // -1 for cells not yet revealed
         // -2 for flagged cells
@@ -43,6 +44,8 @@ public class guiManager {
                 gameWindow.getContentPane().add(cellButton);
             }
         }
+
+        gameWindow.pack();
     }
 
     private void setupMainWindow(){
@@ -56,7 +59,9 @@ public class guiManager {
         baseFrame.setIconImage(mineIcon.getImage());
 
         //Setting up a content pane inside the frame
-        JPanel frameContents = new JPanel(new BorderLayout());
+        JPanel frameContents = new JPanel(new GridLayout());
+        int frameContentsHeight = (int)Math.round(windowHeight*0.9);
+        frameContents.setPreferredSize(new Dimension(frameContentsHeight, windowWidth));
 
         baseFrame.setContentPane(frameContents);
 

@@ -3,9 +3,9 @@ public class gameController {
     private gameBoard board;
     
     public gameController(){
-        guiManager gameUI = new guiManager(600, 600);
-        gameBoard board = new gameBoard(10, 10, 25);
-        board.register(this);
+        gameUI = new guiManager(600, 600);
+        board = new gameBoard();
+        board.registerController(this);
     }
 
     public void update(int[][] renderGrid){
