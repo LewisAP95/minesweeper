@@ -7,12 +7,11 @@ public class gameBoard {
     private cell[][] cellGrid;
     private gameController controller;
 
-    public void registerController(gameController controller){
+    public gameBoard(int xSize, int ySize, int mineCount, gameController controller){
+        this.xSize = xSize;
+        this.ySize = ySize;
+        this.mineCount = mineCount;
         this.controller = controller;
-    }
-
-    public void deregisterController(){
-        controller = null;
     }
 
     private void updateController(int errorCode){
@@ -37,11 +36,7 @@ public class gameBoard {
         }
     }
 
-    public void createNewGameGrid(int xSize, int ySize, int mineCount, int firstGuessX, int firstGuessY){
-        this.xSize = xSize;
-        this.ySize = ySize;
-        this.mineCount = mineCount;
-
+    private void createNewGameGrid(int firstGuessX, int firstGuessY){
         cellGrid = scanForNearbyMineCount(layMines(generateBlankGrid(), firstGuessX, firstGuessY));
         makeGuess(firstGuessX, firstGuessY);
     }
@@ -157,6 +152,9 @@ public class gameBoard {
         if(!boundsCheck(guessX, guessY)){
             //Call an out of bounds error on out of bounds guess
             updateController(1);
+        }else if(cellGrid == null){
+            //If no cellGrid exists yet due to this being the first guess, creates one
+            createNewGameGrid(guessX, guessY);
         }else if(cellGrid[guessX][guessY].getMineStatus()){
             //Call update with a game over code if cell is a mine
             updateController(2);

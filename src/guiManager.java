@@ -1,23 +1,34 @@
 import java.awt.*;
-import java.awt.event.*;
+import java.util.Arrays;
+
 import javax.swing.*;
 
 public class guiManager {
     private int windowWidth;
     private int windowHeight;
     private JFrame gameWindow;
+    private gameController controller;
 
-    public guiManager(int desiredWindowHeight, int desiredWindowWidth){
+    public guiManager(int desiredWindowHeight, int desiredWindowWidth, gameController controller){
         windowWidth = desiredWindowWidth;
         windowHeight = desiredWindowHeight;
+        this.controller = controller;
         javax.swing.SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 setupMainWindow();
-            }
+
+                //Inserts a fake grid at first run so the player can click a cell and immediately begin playing
+                int[][] fakeStartingGrid = new int[10][10];
+                for(int[] innerArray : fakeStartingGrid){
+                    Arrays.fill(innerArray, -1);
+                }
+                visualUpdate(fakeStartingGrid);
+                }
         });
     }
 
     public void visualUpdate(int[][] renderGrid){
+        gameWindow.getContentPane().removeAll();
         gameWindow.getContentPane().setLayout(new GridLayout(renderGrid.length, renderGrid[0].length));
         //renderGrid status list:
         // -1 for cells not yet revealed
@@ -40,11 +51,14 @@ public class guiManager {
                         break;
                 }
                 JButton cellButton = new JButton(buttonContent);
-                cellButton.setActionCommand("cellref " + x + " " + y);
+                cellButton.setActionCommand(x + " " + y);
+                cellButton.addActionListener(controller);
                 gameWindow.getContentPane().add(cellButton);
             }
         }
 
+        //Set the new preferred size to whatever the current size is, to keep any user resizing active
+        gameWindow.setPreferredSize(new Dimension(gameWindow.getWidth(), gameWindow.getHeight()));
         gameWindow.pack();
     }
 
@@ -77,17 +91,19 @@ public class guiManager {
         //Setting up the options buttons and info labels
         JButton newgameButton = new JButton("New Game");
         newgameButton.setActionCommand("new game");
+        newgameButton.addActionListener(controller);
 
         JButton customgameButton = new JButton("Custom Game");
         customgameButton.setActionCommand("custom game");
+        customgameButton.addActionListener(controller);
 
         JLabel timeLabel = new JLabel("Time: ");
         timeLabel.setOpaque(true);
 
-        JLabel difficultyLabel = new JLabel("Difficulty: ");
+        JLabel difficultyLabel = new JLabel("Difficulty: Normal");
         difficultyLabel.setOpaque(true);
 
-        JLabel minesLabel = new JLabel("Mines: ");
+        JLabel minesLabel = new JLabel("Mines: 25");
         minesLabel.setOpaque(true);
 
         optionsAndInfoBar.add(newgameButton);
