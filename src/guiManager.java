@@ -9,10 +9,24 @@ public class guiManager {
     private JFrame gameWindow;
     private gameController controller;
 
+    private ImageIcon mineIcon;
+    private ImageIcon flagIcon;
+    private Color[] cellColourStages;
+
     public guiManager(int desiredWindowHeight, int desiredWindowWidth, gameController controller){
         windowWidth = desiredWindowWidth;
         windowHeight = desiredWindowHeight;
         this.controller = controller;
+
+        mineIcon = new ImageIcon(getClass().getResource("/mine.png"));
+        flagIcon = new ImageIcon(getClass().getResource("/flag.png"));
+        cellColourStages = new Color[]{
+            new Color(55, 138, 28), //First surrounding mines colour stage
+            new Color(173, 86, 19), //Second surrounding mines colour stage
+            new Color(128, 1, 1), //Third surrounding mines colour stage
+            new Color(34, 0, 79) //Fourth surrounding mines colour stage
+        };
+
         javax.swing.SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 setupMainWindow();
@@ -36,21 +50,41 @@ public class guiManager {
         // All else is just the number of surrounding mines
         for(int x = 0; x < renderGrid.length; x++){
             for(int y = 0; y < renderGrid[0].length; y++){
-                String buttonContent = "";
+                JButton cellButton = new JButton("");
+                //String buttonContent = "";
                 switch (renderGrid[x][y]) {
                     case -1:
-                        buttonContent = "-";
+                        //A hidden cell should look blank so button content is left alone
                         break;
                     
                     case -2:
-                        buttonContent = "F";
+                        //Makes cell button contain an image of a flag
+                        cellButton.setIcon(flagIcon);
+                        break;
+
+                    case 0:
+                        //Cells with 0 surrounding mines are made to look visually as if they are no longer there
+                        cellButton.setEnabled(false);
+                        cellButton.setBorderPainted(false);
                         break;
 
                     default:
-                        buttonContent = "" + renderGrid[x][y];
+                        //Sets the number on the cell button equal to the amount of mines surrounding it
+                        int cellNumber = renderGrid[x][y];
+                        cellButton.setText("" + cellNumber);
+
+                        //Changes the text colour based on how many surrounding mines there are, with four tiers
+                        if(cellNumber <= renderGrid[0].length/4){
+                            cellButton.setForeground(cellColourStages[0]);
+                        }else if(cellNumber <= renderGrid[0].length/2){
+                            cellButton.setForeground(cellColourStages[1]);
+                        }else if(cellNumber <= (renderGrid[0].length/2)+(renderGrid[0].length/4)){
+                            cellButton.setForeground(cellColourStages[2]);
+                        }else{
+                            cellButton.setForeground(cellColourStages[3]);
+                        }
                         break;
                 }
-                JButton cellButton = new JButton(buttonContent);
                 cellButton.setActionCommand(x + " " + y);
                 cellButton.addActionListener(controller);
                 gameWindow.getContentPane().add(cellButton);
@@ -68,8 +102,6 @@ public class guiManager {
         baseFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Setting the window icon
-        ImageIcon mineIcon = new ImageIcon(getClass().getResource("/mine.png"));
-
         baseFrame.setIconImage(mineIcon.getImage());
 
         //Setting up a content pane inside the frame
