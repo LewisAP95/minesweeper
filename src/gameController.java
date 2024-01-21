@@ -46,4 +46,8 @@ public class gameController implements ActionListener{
             board.makeGuess(Integer.parseInt(guessCoords[0]), Integer.parseInt(guessCoords[1]));
         }
     }
+
+    public void flagCell(int x, int y){
+        board.doFlag(x, y);
+    }
 }

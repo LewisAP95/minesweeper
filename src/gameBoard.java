@@ -182,15 +182,18 @@ public class gameBoard {
     public void doFlag(int flagX, int flagY){
         //Flips the flag status on the cell at the given coords
         //If the coords were invalid calls and update with the out of bounds error code
-        if(boundsCheck(flagX, flagY)){
-            if(cellGrid[flagX][flagY].getFlaggedStatus()){
-                cellGrid[flagX][flagY].setFlaggedStatus(false);
+        //Flag attempts while on a completely fresh board are ignored
+        if(cellGrid != null){
+            if(boundsCheck(flagX, flagY)){
+                if(cellGrid[flagX][flagY].getFlaggedStatus()){
+                    cellGrid[flagX][flagY].setFlaggedStatus(false);
+                }else{
+                    cellGrid[flagX][flagY].setFlaggedStatus(true);
+                }
+                updateController(0);
             }else{
-                cellGrid[flagX][flagY].setFlaggedStatus(true);
+                updateController(1);
             }
-            updateController(0);
-        }else{
-            updateController(1);
         }
     }
 

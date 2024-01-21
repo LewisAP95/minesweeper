@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 
 import javax.swing.*;
@@ -72,6 +74,8 @@ public class guiManager {
                         //Sets the number on the cell button equal to the amount of mines surrounding it
                         int cellNumber = renderGrid[x][y];
                         cellButton.setText("" + cellNumber);
+                        //<<TODO>> Get text colours still showing up even on disabled button
+                        cellButton.setEnabled(false);
 
                         //Changes the text colour based on how many surrounding mines there are, with four tiers
                         if(cellNumber <= renderGrid[0].length/4){
@@ -87,6 +91,21 @@ public class guiManager {
                 }
                 cellButton.setActionCommand(x + " " + y);
                 cellButton.addActionListener(controller);
+
+                //Attaches a mouse listener to each button that only responds to right clicks
+                //Duplicating the coordinates variables is needed because they cannot be-
+                //-used in this inner class without being final
+                final int xForFlag = x;
+                final int yForFlag = y;
+                cellButton.addMouseListener(new MouseAdapter(){
+                    public void mouseClicked(MouseEvent e){
+                        if(SwingUtilities.isRightMouseButton(e)){
+                            controller.flagCell(xForFlag, yForFlag);
+                        }
+                    }
+                });
+
+
                 gameWindow.getContentPane().add(cellButton);
             }
         }
