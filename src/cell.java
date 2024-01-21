@@ -22,14 +22,14 @@ public class cell {
         // -1 for cells not yet revealed
         // -2 for flagged cells
         // And for all else it returns the number of nearby mines
-        if(isVisible){
-            if(isFlagged){
-                return -2;
+        if(!isFlagged){
+            if(!isVisible){
+                return -1;
             }else{
                 return nearbyMines;
             }
         }else{
-            return -1;
+            return -2;
         }
     }
 
