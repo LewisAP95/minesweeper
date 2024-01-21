@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
-
 import javax.swing.*;
 
 public class guiManager {
@@ -53,29 +52,30 @@ public class guiManager {
         for(int x = 0; x < renderGrid.length; x++){
             for(int y = 0; y < renderGrid[0].length; y++){
                 JButton cellButton = new JButton("");
-                //String buttonContent = "";
+                cellButton.setRolloverEnabled(false);
                 switch (renderGrid[x][y]) {
                     case -1:
                         //A hidden cell should look blank so button content is left alone
+                        cellButton.setRolloverEnabled(true);
                         break;
                     
                     case -2:
                         //Makes cell button contain an image of a flag
                         cellButton.setIcon(flagIcon);
+                        cellButton.setRolloverEnabled(true);
                         break;
 
                     case 0:
-                        //Cells with 0 surrounding mines are made to look visually as if they are no longer there
-                        cellButton.setEnabled(false);
-                        cellButton.setBorderPainted(false);
+                        //Cells with 0 surrounding mines are empty
+                        cellButton.setContentAreaFilled(false);
                         break;
 
                     default:
                         //Sets the number on the cell button equal to the amount of mines surrounding it
                         int cellNumber = renderGrid[x][y];
+
                         cellButton.setText("" + cellNumber);
-                        //<<TODO>> Get text colours still showing up even on disabled button
-                        cellButton.setEnabled(false);
+                        cellButton.setContentAreaFilled(false);
 
                         //Changes the text colour based on how many surrounding mines there are, with four tiers
                         if(cellNumber <= renderGrid[0].length/4){
@@ -89,21 +89,26 @@ public class guiManager {
                         }
                         break;
                 }
-                cellButton.setActionCommand(x + " " + y);
-                cellButton.addActionListener(controller);
 
-                //Attaches a mouse listener to each button that only responds to right clicks
-                //Duplicating the coordinates variables is needed because they cannot be-
-                //-used in this inner class without being final
-                final int xForFlag = x;
-                final int yForFlag = y;
-                cellButton.addMouseListener(new MouseAdapter(){
-                    public void mouseClicked(MouseEvent e){
-                        if(SwingUtilities.isRightMouseButton(e)){
-                            controller.flagCell(xForFlag, yForFlag);
+                //Cells which cannot be interacted with (discovered 0 cells and revealed other cells)-
+                //- will be made so via skipping adding their listeners if this is the case
+                if(cellButton.isContentAreaFilled() == true){
+                    cellButton.setActionCommand(x + " " + y);
+                    cellButton.addActionListener(controller);
+
+                    //Attaches a mouse listener to each button that only responds to right clicks
+                    //Duplicating the coordinates variables is needed because they cannot be-
+                    //-used in this inner class without being final
+                    final int xForFlag = x;
+                    final int yForFlag = y;
+                    cellButton.addMouseListener(new MouseAdapter(){
+                        public void mouseClicked(MouseEvent e){
+                            if(SwingUtilities.isRightMouseButton(e)){
+                                controller.flagCell(xForFlag, yForFlag);
+                            }
                         }
-                    }
-                });
+                    });
+                };
 
 
                 gameWindow.getContentPane().add(cellButton);
@@ -162,15 +167,6 @@ public class guiManager {
         optionsAndInfoBar.add(timeLabel);
         optionsAndInfoBar.add(difficultyLabel);
         optionsAndInfoBar.add(minesLabel);
-
-        //Adding a label to act as the background colour
-        //JLabel blankBackground = new JLabel();
-        //blankBackground.setOpaque(true);
-        //blankBackground.setBackground(new Color(100, 100, 150));
-        //int blankBackgroundHeight = (int)Math.round(windowHeight*0.9);
-        //blankBackground.setPreferredSize(new Dimension(windowWidth, blankBackgroundHeight));
-
-        //baseFrame.getContentPane().add(blankBackground);
 
         //Making the window display itself
         gameWindow = baseFrame;
