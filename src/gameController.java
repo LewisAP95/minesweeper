@@ -68,15 +68,83 @@ public class gameController implements ActionListener{
 
     private void doCustomGame(){
         //Custom game menu popup
+        String[] options = new String[]{"Easy", "Normal", "Hard", "Very Hard", "Custom settings"};
+        int userChoice = JOptionPane.showOptionDialog(
+            null,
+                "Choose a difficulty for the new game.",
+                "Minesweeper: Custom game",
+                JOptionPane.DEFAULT_OPTION, 
+                JOptionPane.WARNING_MESSAGE,
+                gameIcon,
+                options,
+                options[0]
+            ); 
+
+        int desiredMines = 20;
+        int desiredX = 10;
+        int desiredY = 10;
+        switch (userChoice + 1) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                desiredMines = desiredMines*(userChoice+1);
+                createNewGame(desiredX, desiredY, desiredMines);
+                break;
+            case 5: 
+                try {
+                    do{desiredX = Integer.parseInt(JOptionPane.showInputDialog("How many tiles wide do you want the grid to be?"));}
+                    while(!validateCustomGameDimension(desiredX));
+
+                    do{desiredY = Integer.parseInt(JOptionPane.showInputDialog("How many tiles high do you want the grid to be?"));}
+                    while(!validateCustomGameDimension(desiredY));
+
+                    do{desiredMines = Integer.parseInt(JOptionPane.showInputDialog("How many mines do you want to be placed throughout the grid?"));}
+                    while(!validateCustomGameMines(desiredX, desiredY, desiredMines));
+
+                    createNewGame(desiredX, desiredY, desiredMines);
+
+                } catch (NumberFormatException e) {
+                    //Shows a message and drops back to the custom game dialog if incompatible data was entered
+                    JOptionPane.showMessageDialog(null, "Custom settings values must be a number.");
+                    doCustomGame();
+                }
+                break;
+            default:
+                //If user closes out the custom game popup the game over one will be displayed again
+                update(2);
+                break;
+        }
+    }
+
+    private boolean validateCustomGameDimension(int value){
+        if(value > 1 && value <= 50){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private boolean validateCustomGameMines(int x, int y, int mines){
+        int totalCells = x * y;
+        if(mines > 0 && mines < totalCells){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     private void doNewGame(){
-        //Make new game with default settings
-        board = new gameBoard(10, 10, 25, this);
+        createNewGame(10, 10, 25);
+    }
+
+    private void createNewGame(int x, int y, int mines){
+        //Make new game with the given settings
+        board = new gameBoard(x, y, mines, this);
             
         //Passes a fake starting grid to the GUI so there-
         //- will be something for the player to click on to begin the game
-        int[][] fakeStartingGrid = new int[10][10];
+        int[][] fakeStartingGrid = new int[x][y];
             for(int[] innerArray : fakeStartingGrid){
                 Arrays.fill(innerArray, -1);
             }
