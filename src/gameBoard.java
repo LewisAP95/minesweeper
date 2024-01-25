@@ -14,8 +14,9 @@ public class gameBoard {
         this.controller = controller;
     }
 
-    private void updateController(int errorCode){
-        switch (errorCode) {
+    private void updateController(int updateCode){
+        //<TODO> Special rendering cases for game over and game completion
+        switch (updateCode) {
             //Normal, no issues update case
             case 0:
                 controller.update(getRenderGrid());
@@ -23,12 +24,17 @@ public class gameBoard {
             
             //Out of grid bounds error case
             case 1:
-                controller.update(1);
+                //<TODO> PUT AN ACTUAL EXCEPTION IN HERE
                 break;
 
             //Game over case
             case 2:
-                controller.update(2);
+                controller.endGame(2);
+                break;
+
+            //Player won the game case
+            case 3:
+                controller.endGame(1);
                 break;
 
             default:
@@ -148,10 +154,28 @@ public class gameBoard {
         return renderGrid;
     }
 
+    private boolean checkForWin(){
+        int unflaggedMines = 0;
+
+        for(int x = 0; x < xSize; x++){
+            for(int y = 0; y < ySize; y++){
+                if(cellGrid[x][y].getMineStatus() && !cellGrid[x][y].getFlaggedStatus()){
+                    unflaggedMines++;
+                }
+            }
+        }
+
+        if(unflaggedMines > 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public void makeGuess(int guessX, int guessY){
         if(!boundsCheck(guessX, guessY)){
             //Call an out of bounds error on out of bounds guess
-            updateController(1);
+            //<TODO> THROW AN ACTUAL EXCEPTION HERE
         }else if(cellGrid == null){
             //If no cellGrid exists yet due to this being the first guess, creates one
             createNewGameGrid(guessX, guessY);
@@ -190,8 +214,13 @@ public class gameBoard {
                 }else{
                     cellGrid[flagX][flagY].setFlaggedStatus(true);
                 }
-                updateController(0);
+                if(checkForWin()){
+                    updateController(3);
+                }else{
+                    updateController(0);
+                }
             }else{
+                //<TODO> ANOTHER PLACE WHERE PROPER OOB HANDLING THROWING AN EXCEPTION NEEDS TO BE ADDED
                 updateController(1);
             }
         }

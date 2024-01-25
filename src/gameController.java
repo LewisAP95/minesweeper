@@ -20,38 +20,43 @@ public class gameController implements ActionListener{
         gameUI.visualUpdate(renderGrid);
     }
 
-    public void update(int errorCode){
-        //1 = out of grid bounds
+    public void endGame(int endCode){
+        //1 = player won the game
         //2 = game over
-        if(errorCode == 1){
-            //Throw exception for out of bounds guess
+        String endTitle = "";
+        String endMessage = "";
+        if(endCode == 1){
+            endTitle = "Minesweeper: Game complete.";
+            endMessage = "You have flagged all the mines! You win!";
         }else{
-            //Game over code will go here
-            String[] options = new String[]{"New game", "Custom game", "Quit"};
-            int userChoice = JOptionPane.showOptionDialog(
-                null,
-                 "You hit a mine! Game over!",
-                  "Minesweeper: Game over",
-                  JOptionPane.DEFAULT_OPTION, 
-                  JOptionPane.WARNING_MESSAGE,
-                  gameIcon,
-                  options,
-                  options[0]
-                ); 
+            endTitle = "Minesweeper: Game over.";
+            endMessage = "You hit a mine! Game over.";
+        }
+        //Game over code will go here
+        String[] options = new String[]{"New game", "Custom game", "Quit"};
+        int userChoice = JOptionPane.showOptionDialog(
+            null,
+                endMessage,
+                endTitle,
+                JOptionPane.DEFAULT_OPTION, 
+                JOptionPane.WARNING_MESSAGE,
+                gameIcon,
+                options,
+                options[0]
+            ); 
 
-            if(userChoice == 0){
-                //First button is the new game button
-                doNewGame();
-            }else if(userChoice == 1){
-                //Second button is the custom game button
-                doCustomGame();
-            }else if(userChoice == 2){
-                //Quit game
-                System.exit(0);
-            }else if(userChoice == JOptionPane.CLOSED_OPTION){
-                //Also quit if user tries to close the window, to prevent cheating
-                System.exit(0);
-            }
+        if(userChoice == 0){
+            //First button is the new game button
+            doNewGame();
+        }else if(userChoice == 1){
+            //Second button is the custom game button
+            doCustomGame();
+        }else if(userChoice == 2){
+            //Quit game
+            System.exit(0);
+        }else if(userChoice == JOptionPane.CLOSED_OPTION){
+            //Also quit if user tries to close the window, to prevent cheating
+            System.exit(0);
         }
     }
 
@@ -112,7 +117,7 @@ public class gameController implements ActionListener{
                 break;
             default:
                 //If user closes out the custom game popup the game over one will be displayed again
-                update(2);
+                endGame(2);
                 break;
         }
     }
