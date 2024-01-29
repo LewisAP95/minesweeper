@@ -98,13 +98,13 @@ public class gameController implements ActionListener{
                 break;
             case 5: 
                 try {
-                    do{desiredX = Integer.parseInt(JOptionPane.showInputDialog("How many tiles wide do you want the grid to be?"));}
+                    do{desiredX = Integer.parseInt(JOptionPane.showInputDialog("How many tiles wide do you want the grid to be? (Between 2 and 20.)"));}
                     while(!validateCustomGameDimension(desiredX));
 
-                    do{desiredY = Integer.parseInt(JOptionPane.showInputDialog("How many tiles high do you want the grid to be?"));}
+                    do{desiredY = Integer.parseInt(JOptionPane.showInputDialog("How many tiles high do you want the grid to be? (Between 2 and 20.)"));}
                     while(!validateCustomGameDimension(desiredY));
 
-                    do{desiredMines = Integer.parseInt(JOptionPane.showInputDialog("How many mines do you want to be placed throughout the grid?"));}
+                    do{desiredMines = Integer.parseInt(JOptionPane.showInputDialog("How many mines do you want to be placed throughout the grid? (Between 1 and grid width * height)"));}
                     while(!validateCustomGameMines(desiredX, desiredY, desiredMines));
 
                     createNewGame(desiredX, desiredY, desiredMines);
@@ -123,7 +123,7 @@ public class gameController implements ActionListener{
     }
 
     private boolean validateCustomGameDimension(int value){
-        if(value > 1 && value <= 50){
+        if(value > 1 && value <= 20){
             return true;
         }else{
             return false;

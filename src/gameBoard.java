@@ -21,19 +21,14 @@ public class gameBoard {
             case 0:
                 controller.update(getRenderGrid());
                 break;
-            
-            //Out of grid bounds error case
-            case 1:
-                //<TODO> PUT AN ACTUAL EXCEPTION IN HERE
-                break;
 
             //Game over case
-            case 2:
+            case 1:
                 controller.endGame(2);
                 break;
 
             //Player won the game case
-            case 3:
+            case 2:
                 controller.endGame(1);
                 break;
 
@@ -76,8 +71,10 @@ public class gameBoard {
             if(randX == firstGuessX && randY == firstGuessY){
                 skipCell = true;
             }
+            //Excludes the surrounding cells from mine placement only if the total size of the grid exceeds the count of surrounding cells
+            //Prevents mine placement hanging if the surrounding cells take up the whole grid (i.e. first guess is the center of a 3x3 grid)
             for(cell c : firstGuessSurroundingCells){
-                if(c == newGrid[randX][randY]){
+                if((c == newGrid[randX][randY]) && ((newGrid.length * newGrid[0].length) > firstGuessSurroundingCells.length + 1)){
                     skipCell = true;
                 }
             }
@@ -173,33 +170,33 @@ public class gameBoard {
     }
 
     public void makeGuess(int guessX, int guessY){
-        if(!boundsCheck(guessX, guessY)){
-            //Call an out of bounds error on out of bounds guess
-            //<TODO> THROW AN ACTUAL EXCEPTION HERE
-        }else if(cellGrid == null){
-            //If no cellGrid exists yet due to this being the first guess, creates one
+        if(cellGrid == null){
+            //If no cellGrid exists yet due to this being the first ever guess, creates one
             createNewGameGrid(guessX, guessY);
-        }else if(cellGrid[guessX][guessY].getMineStatus()){
-            //Call update with a game over code if cell is a mine
-            updateController(2);
-        }else if(cellGrid[guessX][guessY].getGuessedStatus()){
-            //If the cell has already been guessed, change nothing
-            ;
-        }else{
-            //Changes the right values on a guessed cell
-            cell guessedCell = cellGrid[guessX][guessY];
-            guessedCell.setGuessedStatus(true);
-            guessedCell.setVisibleStatus(true);
-            guessedCell.setFlaggedStatus(false);
-            //If cell was a 0 for nearby mines, guesses all surrounding cells to reveal them
-            //Proceeding recursively if any of those end up also being zero 
-            if(guessedCell.getNearbyMines() == 0){
-                for(cell c : getSurroundingCells(guessedCell, cellGrid)){
-                    makeGuess(c.getX(), c.getY());
+        }
+        if(boundsCheck(guessX, guessY)){
+            if(cellGrid[guessX][guessY].getMineStatus()){
+                //Call update with a game over code if cell is a mine
+                updateController(1);
+            }else if(cellGrid[guessX][guessY].getGuessedStatus()){
+                //If the cell has already been guessed, change nothing
+                ;
+            }else{
+                //Changes the right values on a guessed cell
+                cell guessedCell = cellGrid[guessX][guessY];
+                guessedCell.setGuessedStatus(true);
+                guessedCell.setVisibleStatus(true);
+                guessedCell.setFlaggedStatus(false);
+                //If cell was a 0 for nearby mines, guesses all surrounding cells to reveal them
+                //Proceeding recursively if any of those end up also being zero 
+                if(guessedCell.getNearbyMines() == 0){
+                    for(cell c : getSurroundingCells(guessedCell, cellGrid)){
+                        makeGuess(c.getX(), c.getY());
+                    }
                 }
+                //May run too many updates on a zero cell cascade, needs testing
+                updateController(0);
             }
-            //May run too many updates on a zero cell cascade, needs testing
-            updateController(0);
         }
     }
 
@@ -215,21 +212,21 @@ public class gameBoard {
                     cellGrid[flagX][flagY].setFlaggedStatus(true);
                 }
                 if(checkForWin()){
-                    updateController(3);
+                    updateController(2);
                 }else{
                     updateController(0);
                 }
-            }else{
-                //<TODO> ANOTHER PLACE WHERE PROPER OOB HANDLING THROWING AN EXCEPTION NEEDS TO BE ADDED
-                updateController(1);
             }
         }
     }
 
     private boolean boundsCheck(int x, int y){
         //Checks of a set of coords are within the bounds of the game grid and returns the result
+        //Throws an exception if an out-of-bounds coordinate has somehow been sent
         if((x >= 0 && x < xSize) && (y >= 0 && y < ySize)){
             return true;
-        }else return false;
+        }else{
+            return false;
+        }
     }
 }
