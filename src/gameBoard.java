@@ -15,7 +15,6 @@ public class gameBoard {
     }
 
     private void updateController(int updateCode){
-        //<TODO> Special rendering cases for game over and game completion
         switch (updateCode) {
             //Normal, no issues update case
             case 0:
@@ -24,16 +23,29 @@ public class gameBoard {
 
             //Game over case
             case 1:
+                exposeMines();
+                controller.update(getRenderGrid());
                 controller.endGame(2);
                 break;
 
             //Player won the game case
             case 2:
+                controller.update(getRenderGrid());
                 controller.endGame(1);
                 break;
 
             default:
                 break;
+        }
+    }
+
+    private void exposeMines(){
+        for(cell[] c : cellGrid){
+            for(cell c2 : c){
+                if(c2.getMineStatus()){
+                    c2.setVisibleStatus(true);
+                }
+            }
         }
     }
 

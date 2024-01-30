@@ -25,6 +25,8 @@ public class cell {
         if(!isFlagged){
             if(!isVisible){
                 return -1;
+            }else if(isMine){
+                return -3;
             }else{
                 return nearbyMines;
             }

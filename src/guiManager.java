@@ -65,6 +65,11 @@ public class guiManager {
                         cellButton.setRolloverEnabled(true);
                         break;
 
+                    case -3:
+                        //Makes cell button contain image of a mine
+                        cellButton.setIcon(mineIcon);
+                        break;
+
                     case 0:
                         //Cells with 0 surrounding mines are empty
                         cellButton.setContentAreaFilled(false);
