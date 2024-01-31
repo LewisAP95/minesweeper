@@ -1,12 +1,17 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.Timer;
+
 import javax.swing.*;
 
 public class guiManager {
     private int windowWidth;
     private int windowHeight;
+    private long gameTimerValue;
     private JFrame gameWindow;
     private gameController controller;
 
@@ -158,25 +163,32 @@ public class guiManager {
         customgameButton.setActionCommand("custom game");
         customgameButton.addActionListener(controller);
 
+        //Sets up the label, timer object and listener for the game timer
         JLabel timeLabel = new JLabel("Time: ");
+        gameTimerValue = java.lang.System.currentTimeMillis(); 
+        timeLabel.setBackground(new Color(100, 100, 125));
         timeLabel.setOpaque(true);
-
-        JLabel difficultyLabel = new JLabel("Difficulty: Normal");
-        difficultyLabel.setOpaque(true);
-
-        JLabel minesLabel = new JLabel("Mines: 25");
-        minesLabel.setOpaque(true);
+        ActionListener timerDisplay = new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                long timeSeconds = (java.lang.System.currentTimeMillis() - gameTimerValue)/1000;
+                timeLabel.setText("Time: " + timeSeconds / 60 + "m " + timeSeconds % 60 + "s");
+            }
+        };
+        javax.swing.Timer gameTimer = new javax.swing.Timer(1000, timerDisplay);
+        gameTimer.start();
 
         optionsAndInfoBar.add(newgameButton);
         optionsAndInfoBar.add(customgameButton);
         optionsAndInfoBar.add(timeLabel);
-        optionsAndInfoBar.add(difficultyLabel);
-        optionsAndInfoBar.add(minesLabel);
 
         //Making the window display itself
         gameWindow = baseFrame;
         baseFrame.pack();
         baseFrame.setVisible(true);
+    }
+
+    public void resetGuiTimer(){
+        gameTimerValue = java.lang.System.currentTimeMillis();
     }
 
 }

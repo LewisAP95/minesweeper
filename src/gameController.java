@@ -154,6 +154,7 @@ public class gameController implements ActionListener{
                 Arrays.fill(innerArray, -1);
             }
         update(fakeStartingGrid);
+        gameUI.resetGuiTimer();
     }
 
     public void flagCell(int x, int y){
