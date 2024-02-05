@@ -40,6 +40,8 @@ public class gameBoard {
     }
 
     private void exposeMines(){
+        //Only used on game loss, will loop through the grid and-
+        //Set all cells with a mine to be visible
         for(cell[] c : cellGrid){
             for(cell c2 : c){
                 if(c2.getMineStatus()){
@@ -50,6 +52,8 @@ public class gameBoard {
     }
 
     private void createNewGameGrid(int firstGuessX, int firstGuessY){
+        //Created a grid using the correct order of methods
+        //First generates a blank grid, then inserts mines, then counts the nearby mines of each cell
         cellGrid = scanForNearbyMineCount(layMines(generateBlankGrid(), firstGuessX, firstGuessY));
         makeGuess(firstGuessX, firstGuessY);
     }
@@ -164,6 +168,8 @@ public class gameBoard {
     }
 
     private boolean checkForWin(){
+        //Checks for a win by scanning the game grid and looking for any unflagged mines
+        //If any mines exist which have not yet been flagged, the game is not yet won
         int unflaggedMines = 0;
 
         for(int x = 0; x < xSize; x++){
@@ -182,10 +188,14 @@ public class gameBoard {
     }
 
     public void makeGuess(int guessX, int guessY){
+        //Takes in x and y values and 'guesses' a cell based on a user click
+
         if(cellGrid == null){
             //If no cellGrid exists yet due to this being the first ever guess, creates one
             createNewGameGrid(guessX, guessY);
         }
+
+        //Make sure the guess is in bounds before anything else is checked
         if(boundsCheck(guessX, guessY)){
             if(cellGrid[guessX][guessY].getMineStatus()){
                 //Call update with a game over code if cell is a mine

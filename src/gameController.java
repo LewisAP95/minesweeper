@@ -11,12 +11,14 @@ public class gameController implements ActionListener{
     private ImageIcon gameIcon;
     
     public gameController(){
+        //Create the GUI, game board and the icon for use in popup menus
         gameUI = new guiManager(600, 600, this);
         board = new gameBoard(10, 10, 25, this);
         gameIcon =  new ImageIcon(getClass().getResource("/mine.png"));
     }
 
     public void update(int[][] renderGrid){
+        //Passes a given render grid through to the GUI
         gameUI.visualUpdate(renderGrid);
     }
 
@@ -25,6 +27,7 @@ public class gameController implements ActionListener{
         //2 = game over
         String endTitle = "";
         String endMessage = "";
+        //Changes the title and message based on the state
         if(endCode == 1){
             endTitle = "Minesweeper: Game complete.";
             endMessage = "You have flagged all the mines! You win!";
@@ -32,7 +35,7 @@ public class gameController implements ActionListener{
             endTitle = "Minesweeper: Game over.";
             endMessage = "You hit a mine! Game over.";
         }
-        //Game over code will go here
+        //Displays the choice menu when the game is lost or won
         String[] options = new String[]{"New game", "Custom game", "Quit"};
         int userChoice = JOptionPane.showOptionDialog(
             null,
@@ -61,6 +64,9 @@ public class gameController implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e){
+        //The event listener for cell and button clicks from the GUI
+        //Calls the appropriate method in either menu bar button, or-
+        //-splits the action command up to get the coordinates to call the guess method of the board
         if(e.getActionCommand() == "new game"){
             doNewGame();
         }else if(e.getActionCommand() == "custom game"){
@@ -123,6 +129,7 @@ public class gameController implements ActionListener{
     }
 
     private boolean validateCustomGameDimension(int value){
+        //Checks that user input dimensions are within acceptable values
         if(value > 1 && value <= 20){
             return true;
         }else{
@@ -131,6 +138,7 @@ public class gameController implements ActionListener{
     }
 
     private boolean validateCustomGameMines(int x, int y, int mines){
+        //Checks that user input mine count is within acceptable values
         int totalCells = x * y;
         if(mines > 0 && mines < totalCells){
             return true;
@@ -140,6 +148,7 @@ public class gameController implements ActionListener{
     }
 
     private void doNewGame(){
+        //Starts a new game with the default values
         createNewGame(10, 10, 25);
     }
 
@@ -158,6 +167,7 @@ public class gameController implements ActionListener{
     }
 
     public void flagCell(int x, int y){
+        //Passes the flagged cell coords along to the method in the game board
         board.doFlag(x, y);
     }
 }

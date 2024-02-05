@@ -4,7 +4,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
-import java.util.Timer;
 
 import javax.swing.*;
 
@@ -20,12 +19,16 @@ public class guiManager {
     private Color[] cellColourStages;
 
     public guiManager(int desiredWindowHeight, int desiredWindowWidth, gameController controller){
+        //Sets various visual variables to the argument values
         windowWidth = desiredWindowWidth;
         windowHeight = desiredWindowHeight;
         this.controller = controller;
 
         mineIcon = new ImageIcon(getClass().getResource("/mine.png"));
         flagIcon = new ImageIcon(getClass().getResource("/flag.png"));
+
+        //Colour stages for the nearby mine count numbers on the cells
+        //Changes based on how many mines are nearby
         cellColourStages = new Color[]{
             new Color(55, 138, 28), //First surrounding mines colour stage
             new Color(173, 86, 19), //Second surrounding mines colour stage
@@ -48,11 +51,16 @@ public class guiManager {
     }
 
     public void visualUpdate(int[][] renderGrid){
+        //Updates the contents of the game window
         gameWindow.getContentPane().removeAll();
         gameWindow.getContentPane().setLayout(new GridLayout(renderGrid.length, renderGrid[0].length));
+
+        //Cell content is decided based on what value each index in the inner arrays contains
         //renderGrid status list:
         // -1 for cells not yet revealed
         // -2 for flagged cells
+        // -3 for displayed mines (only shown on game loss)
+        // 0 for empty cells with no surrounding mines
         // All else is just the number of surrounding mines
         for(int x = 0; x < renderGrid.length; x++){
             for(int y = 0; y < renderGrid[0].length; y++){
@@ -166,7 +174,7 @@ public class guiManager {
         //Sets up the label, timer object and listener for the game timer
         JLabel timeLabel = new JLabel("Time: ");
         gameTimerValue = java.lang.System.currentTimeMillis(); 
-        timeLabel.setBackground(new Color(100, 100, 125));
+        timeLabel.setBackground(new Color(150, 150, 175));
         timeLabel.setOpaque(true);
         ActionListener timerDisplay = new ActionListener() {
             public void actionPerformed(ActionEvent e){
@@ -188,6 +196,7 @@ public class guiManager {
     }
 
     public void resetGuiTimer(){
+        //Resets the game round timer by setting it to the current time
         gameTimerValue = java.lang.System.currentTimeMillis();
     }
 

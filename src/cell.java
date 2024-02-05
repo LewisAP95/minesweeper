@@ -21,6 +21,7 @@ public class cell {
         //Returns a number based on the state the cell is in
         // -1 for cells not yet revealed
         // -2 for flagged cells
+        // -3 for revealed mines (only used on game loss)
         // And for all else it returns the number of nearby mines
         if(!isFlagged){
             if(!isVisible){
